@@ -1,0 +1,9 @@
+[build]
+  # Adjust this command if your build script is named differently.
+  command = "npm run build"
+  # This is the folder where your static assets will be located after the build.
+  publish = "build"
+
+[functions]
+  # This tells Netlify where your serverless function files are stored.
+  directory = "netlify/functions"
