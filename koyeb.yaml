@@ -1,42 +1,46 @@
-name: etherdoxshefzysms
-service:
-  name: api
-  env:
-    - name: NODE_ENV
-      value: production
-    - name: HOST
-      value: 0.0.0.0
-    - name: PORT
-      value: 5000
-  ports:
-    - port: 5000
-      protocol: http
-  routes:
-    - path: /
-  instance_types:
-    - type: nano
-  regions:
-    - fra
-  buildpacks:
-    - nodejs
-  health_checks:
-    liveness:
-      http:
-        path: /api/health
-        port: 5000
-    readiness:
-      http:
-        path: /api/health
-        port: 5000
-  scalings:
-    max_instances: 1
-    min_instances: 1
-  environment_variables:
-    - key: KOYEB_HOST
-      value: "true"
-    - key: SESSION_SECRET
-      value: ${SESSION_SECRET}
-    - key: DATABASE_URL
-      value: ${DATABASE_URL}
-    - key: BASE_URL
-      value: ${BASE_URL}
+name: their-app
+services:
+  - name: web
+    type: web
+    ports:
+      - protocol: http
+        port: 8080
+    instances:
+      - name: instance-1
+        size: nano
+    routes:
+      - path: "/*"
+    env:
+      - name: NODE_ENV
+        value: production
+      - name: HOST
+        value: 0.0.0.0
+      - name: PORT
+        value: 5000
+    build:
+      commands:
+        - npm install
+        - npm run build
+    run:
+      commands:
+        - npx drizzle-kit migrate:run
+        - npm start
+    health_checks:
+      liveness:
+        http:
+          path: /api/health
+          port: 5000
+      readiness:
+        http:
+          path: /api/health
+          port: 5000
+    scalings:
+      max_instances: 1
+      min_instances: 1
+    environment_variables:
+      - key: KOYEB_HOST
+        value: "true"
+      - key: SESSION_SECRET
+        value: ${SESSION_SECRET}
+      - key: DATABASE_URL
+        value: ${DATABASE_URL}
